@@ -25,5 +25,16 @@
 </head>
 <body>
     <canvas id="the_canvas_id"></canvas>
+    <script type="module">
+        import init, { start, init_panic_hook } from './pkg/exquisite_verse_wasm.js';
+        
+        init().then(() => {
+            console.log('WASM module initialized');
+            init_panic_hook();
+            start();
+        }).catch(err => {
+            console.error('Failed to initialize WASM module:', err);
+        });
+    </script>
 </body>
 </html> 

@@ -13,6 +13,7 @@ use web_sys::HtmlCanvasElement;
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen]
 pub fn start() {
+    console_error_panic_hook::set_once();
     let web_options = WebOptions::default();
     spawn_local(async {
         let canvas = web_sys::window()
@@ -33,4 +34,11 @@ pub fn start() {
             .await
             .expect("failed to start eframe");
     });
+}
+
+// Initialize the panic hook for better error messages
+#[cfg(target_arch = "wasm32")]
+#[wasm_bindgen]
+pub fn init_panic_hook() {
+    console_error_panic_hook::set_once();
 }
