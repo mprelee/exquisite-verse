@@ -1,0 +1,8 @@
+[package]
+name = "exquisite-verse-wasm"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+exquisite-verse-core = { path = "../exquisite-verse-core" }
+exquisite-verse-ui = { path = "../exquisite-verse-ui" }

@@ -2,5 +2,6 @@
 members = [
     "exquisite-verse-core",
     "exquisite-verse-ui",
+    "exquisite-verse-wasm",
 ]
 resolver = "3"
