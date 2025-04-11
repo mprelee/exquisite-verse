@@ -1,0 +1,10 @@
+[package]
+name = "exquisite-verse"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+base64 = "0.22.1"
+bincode = "2.0.0"
+serde = { version = "1.0.215", features = ["derive"] }
+iced = "0.13.1"
