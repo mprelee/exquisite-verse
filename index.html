@@ -2,39 +2,46 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exquisite Verse</title>
+    <title>WASM Hello World</title>
     <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            background-color: #f0f0f0;
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        canvas {
-            width: 100%;
-            height: 100%;
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
         }
-        #the_canvas_id {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
         }
     </style>
 </head>
 <body>
-    <canvas id="the_canvas_id"></canvas>
+    <h1>WASM Hello World</h1>
+    <button onclick="sayHello()">Say Hello</button>
+    <button onclick="testAdd()">Test Add (5 + 7)</button>
+    <div id="result"></div>
+
     <script type="module">
-        import init, { start, init_panic_hook } from './pkg/exquisite_verse.js';
-        
-        init().then(() => {
-            console.log('WASM module initialized');
-            init_panic_hook();
-            start();
-        }).catch(err => {
-            console.error('Failed to initialize WASM module:', err);
-        });
+        import init, { greet, add } from '/pkg/exquisite_verse.js';
+
+        window.sayHello = async function() {
+            await init();
+            const result = greet();
+            document.getElementById('result').textContent = result;
+        };
+
+        window.testAdd = async function() {
+            await init();
+            const result = add(5, 7);
+            document.getElementById('result').textContent = `5 + 7 = ${result}`;
+        };
     </script>
 </body>
 </html> 

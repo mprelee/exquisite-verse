@@ -14,6 +14,10 @@ open = true
 extension = "js"
 mime_type = "application/javascript"
 
+[[serve.mime_types]]
+extension = "wasm"
+mime_type = "application/wasm"
+
 [[hooks]]
 stage = "build"
 command = "wasm-bindgen"
