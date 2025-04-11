@@ -1,5 +1,5 @@
 use eframe::egui;
-use crate::poem::Poem;
+use exquisite_verse_core::poem::Poem;
 
 // Define the display mode enum
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -195,3 +195,7 @@ pub fn run() -> Result<(), eframe::Error> {
         Box::new(|_cc| Ok(Box::new(ExquisiteVerse::new()))),
     )
 } 
+
+pub fn main() {
+    run().unwrap();
+}

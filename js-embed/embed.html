@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exquisite Verse - Embedded</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .poem-container {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .poem-display {
+            white-space: pre-wrap;
+            font-family: monospace;
+            margin-bottom: 20px;
+            min-height: 200px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .mode-selector label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .copy-feedback {
+            color: green;
+            margin-left: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Exquisite Verse</h1>
+        </div>
+        
+        <div class="poem-container">
+            <div class="mode-selector">
+                <label>
+                    <input type="radio" name="display-mode" value="cleartext" checked> Cleartext
+                </label>
+                <label>
+                    <input type="radio" name="display-mode" value="semi-obfuscated"> Semi-Obfuscated
+                </label>
+                <label>
+                    <input type="radio" name="display-mode" value="fully-obfuscated"> Fully-Obfuscated
+                </label>
+            </div>
+            
+            <div class="poem-display" id="poem-display"></div>
+            
+            <div class="controls">
+                <button id="copy-button">📋 Copy to Clipboard</button>
+                <span id="copy-feedback" class="copy-feedback">✓ Copied!</span>
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="new-line" placeholder="Enter a new line...">
+                <button id="add-line">Add Line</button>
+                <button id="clear-poem">Clear Poem</button>
+            </div>
+            
+            <div class="controls">
+                <button id="import-button">Import Poem</button>
+                <button id="export-button">Export Poem</button>
+            </div>
+            
+            <div id="import-container" style="display: none;">
+                <textarea id="import-text" rows="10" style="width: 100%; margin-bottom: 10px;" placeholder="Paste your poem here..."></textarea>
+                <div class="controls">
+                    <button id="confirm-import">Import</button>
+                    <button id="cancel-import">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Poem class implementation
+        class Poem {
+            constructor(input = '') {
+                this.lines = input.split('\n').filter(line => line.trim() !== '');
+            }
+            
+            addLine(line) {
+                if (line.trim() !== '') {
+                    this.lines.push(line);
+                }
+            }
+            
+            clear() {
+                this.lines = [];
+            }
+            
+            asCleartext() {
+                return this.lines.join('\n');
+            }
+            
+            asSemiObfuscated() {
+                if (this.lines.length === 0) {
+                    return '';
+                }
+                
+                const result = [];
+                
+                // Process all lines except the last one
+                for (let i = 0; i < this.lines.length - 1; i++) {
+                    result.push(this.base64Encode(this.lines[i]));
+                }
+                
+                // Add the last line without encoding
+                if (this.lines.length > 0) {
+                    result.push(this.lines[this.lines.length - 1]);
+                }
+                
+                return result.join('\n');
+            }
+            
+            asFullyObfuscated() {
+                if (this.lines.length === 0) {
+                    return '';
+                }
+                
+                const result = [];
+                
+                // Process all lines
+                for (const line of this.lines) {
+                    result.push(this.base64Encode(line));
+                }
+                
+                return result.join('\n');
+            }
+            
+            base64Encode(str) {
+                return btoa(unescape(encodeURIComponent(str)));
+            }
+            
+            base64Decode(str) {
+                return decodeURIComponent(escape(atob(str)));
+            }
+            
+            fromSemiObfuscated(input) {
+                const lines = input.split('\n');
+                const result = [];
+                
+                if (lines.length === 0) {
+                    return this;
+                }
+                
+                // Process all lines except the last one
+                for (let i = 0; i < lines.length - 1; i++) {
+                    try {
+                        result.push(this.base64Decode(lines[i]));
+                    } catch (e) {
+                        console.error('Error decoding line:', e);
+                        return this;
+                    }
+                }
+                
+                // Add the last line without decoding
+                if (lines.length > 0) {
+                    result.push(lines[lines.length - 1]);
+                }
+                
+                this.lines = result;
+                return this;
+            }
+            
+            fromFullyObfuscated(input) {
+                const lines = input.split('\n');
+                const result = [];
+                
+                for (const line of lines) {
+                    try {
+                        result.push(this.base64Decode(line));
+                    } catch (e) {
+                        console.error('Error decoding line:', e);
+                        return this;
+                    }
+                }
+                
+                this.lines = result;
+                return this;
+            }
+        }
+        
+        // DOM elements
+        const poemDisplay = document.getElementById('poem-display');
+        const newLineInput = document.getElementById('new-line');
+        const addLineButton = document.getElementById('add-line');
+        const clearPoemButton = document.getElementById('clear-poem');
+        const copyButton = document.getElementById('copy-button');
+        const copyFeedback = document.getElementById('copy-feedback');
+        const importButton = document.getElementById('import-button');
+        const exportButton = document.getElementById('export-button');
+        const importContainer = document.getElementById('import-container');
+        const importText = document.getElementById('import-text');
+        const confirmImportButton = document.getElementById('confirm-import');
+        const cancelImportButton = document.getElementById('cancel-import');
+        const displayModeRadios = document.querySelectorAll('input[name="display-mode"]');
+        
+        // Initialize poem
+        let poem = new Poem();
+        
+        // Update poem display
+        function updatePoemDisplay() {
+            const selectedMode = document.querySelector('input[name="display-mode"]:checked').value;
+            
+            switch (selectedMode) {
+                case 'cleartext':
+                    poemDisplay.textContent = poem.asCleartext();
+                    break;
+                case 'semi-obfuscated':
+                    poemDisplay.textContent = poem.asSemiObfuscated();
+                    break;
+                case 'fully-obfuscated':
+                    poemDisplay.textContent = poem.asFullyObfuscated();
+                    break;
+            }
+        }
+        
+        // Add line to poem
+        addLineButton.addEventListener('click', () => {
+            const line = newLineInput.value.trim();
+            if (line !== '') {
+                poem.addLine(line);
+                newLineInput.value = '';
+                updatePoemDisplay();
+            }
+        });
+        
+        // Handle Enter key in input
+        newLineInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const line = newLineInput.value.trim();
+                if (line !== '') {
+                    poem.addLine(line);
+                    newLineInput.value = '';
+                    updatePoemDisplay();
+                }
+            }
+        });
+        
+        // Clear poem
+        clearPoemButton.addEventListener('click', () => {
+            poem.clear();
+            updatePoemDisplay();
+        });
+        
+        // Copy to clipboard
+        copyButton.addEventListener('click', () => {
+            const text = poemDisplay.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                copyFeedback.style.display = 'inline';
+                setTimeout(() => {
+                    copyFeedback.style.display = 'none';
+                }, 1000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        });
+        
+        // Import poem
+        importButton.addEventListener('click', () => {
+            importContainer.style.display = 'block';
+            importText.value = poemDisplay.textContent;
+        });
+        
+        // Confirm import
+        confirmImportButton.addEventListener('click', () => {
+            const selectedMode = document.querySelector('input[name="display-mode"]:checked').value;
+            const text = importText.value;
+            
+            if (text.trim() !== '') {
+                switch (selectedMode) {
+                    case 'cleartext':
+                        poem = new Poem(text);
+                        break;
+                    case 'semi-obfuscated':
+                        poem = new Poem().fromSemiObfuscated(text);
+                        break;
+                    case 'fully-obfuscated':
+                        poem = new Poem().fromFullyObfuscated(text);
+                        break;
+                }
+                
+                importContainer.style.display = 'none';
+                updatePoemDisplay();
+            }
+        });
+        
+        // Cancel import
+        cancelImportButton.addEventListener('click', () => {
+            importContainer.style.display = 'none';
+        });
+        
+        // Export poem
+        exportButton.addEventListener('click', () => {
+            const text = poemDisplay.textContent;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'poem.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+        
+        // Display mode change
+        displayModeRadios.forEach(radio => {
+            radio.addEventListener('change', updatePoemDisplay);
+        });
+        
+        // Initial display
+        updatePoemDisplay();
+    </script>
+</body>
+</html> 

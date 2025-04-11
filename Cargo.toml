@@ -1,11 +1,6 @@
-[package]
-name = "exquisite-verse"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-base64 = "0.22.1"
-bincode = "2.0.0"
-serde = { version = "1.0.215", features = ["derive"] }
-egui = "0.31.1"
-eframe = "0.31.1"
+[workspace]
+members = [
+    "exquisite-verse-core",
+    "exquisite-verse-ui",
+]
+resolver = "3"

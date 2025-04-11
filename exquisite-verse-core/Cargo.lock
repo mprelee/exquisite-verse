@@ -1022,7 +1022,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "exquisite-verse-core"
+name = "exquisite-verse"
 version = "0.1.0"
 dependencies = [
  "base64",
@@ -1030,15 +1030,6 @@ dependencies = [
  "eframe",
  "egui",
  "serde",
-]
-
-[[package]]
-name = "exquisite-verse-ui"
-version = "0.1.0"
-dependencies = [
- "eframe",
- "egui",
- "exquisite-verse-core",
 ]
 
 [[package]]
