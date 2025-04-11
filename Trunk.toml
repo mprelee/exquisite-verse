@@ -1,22 +1,23 @@
 [build]
-target = "test.html"
+target = "index.html"
 release = false
 dist = "dist"
 public_url = "/"
 
 [serve]
-addresses = ["127.0.0.1:8080"]
+address = "127.0.0.1"
 port = 8080
 open = true
 
-# Add proper MIME type configuration
-[[proxy]]
-backend = "http://[::1]:8080"
+# Add MIME type configuration
+[[serve.mime_types]]
+extension = "js"
+mime_type = "application/javascript"
 
 [[hooks]]
 stage = "build"
 command = "wasm-bindgen"
-command_arguments = ["--target", "web", "--out-dir", "./dist/pkg", "../target/wasm32-unknown-unknown/debug/exquisite_verse_wasm.wasm"]
+command_arguments = ["--target", "web", "--out-dir", "./dist/pkg", "target/wasm32-unknown-unknown/debug/exquisite_verse.wasm"]
 
 [watch]
-watch = ["src", "test.html"] 
+watch = ["src", "index.html"] 
