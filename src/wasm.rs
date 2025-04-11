@@ -3,7 +3,7 @@ use eframe::WebOptions;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen_futures::spawn_local;
 #[cfg(target_arch = "wasm32")]
-use exquisite_verse_ui::ui::ExquisiteVerse;
+use crate::ui::ExquisiteVerse;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::{prelude::*, JsCast};
 #[cfg(target_arch = "wasm32")]

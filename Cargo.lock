@@ -1032,33 +1032,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "exquisite-verse-core"
+name = "exquisite-verse"
 version = "0.1.0"
 dependencies = [
  "base64",
  "bincode",
- "serde",
-]
-
-[[package]]
-name = "exquisite-verse-ui"
-version = "0.1.0"
-dependencies = [
- "eframe",
- "egui",
- "exquisite-verse-core",
- "wasm-bindgen",
- "web-sys",
-]
-
-[[package]]
-name = "exquisite-verse-wasm"
-version = "0.1.0"
-dependencies = [
  "console_error_panic_hook",
  "eframe",
- "exquisite-verse-core",
- "exquisite-verse-ui",
+ "egui",
+ "serde",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",

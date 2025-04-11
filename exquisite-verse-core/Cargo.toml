@@ -1,9 +1,0 @@
-[package]
-name = "exquisite-verse-core"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-base64 = "0.22.1"
-bincode = "2.0.0"
-serde = { version = "1.0.215", features = ["derive"] }

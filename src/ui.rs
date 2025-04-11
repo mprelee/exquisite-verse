@@ -1,5 +1,5 @@
 use eframe::egui;
-use exquisite_verse_core::poem::Poem;
+use crate::Poem;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::JsCast;
 #[cfg(target_arch = "wasm32")]
