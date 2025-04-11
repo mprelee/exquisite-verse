@@ -7,11 +7,3 @@ edition = "2024"
 base64 = "0.22.1"
 bincode = "2.0.0"
 serde = { version = "1.0.215", features = ["derive"] }
-egui = "0.31.1"
-eframe = "0.31.1"
-
-[profile.release]
-lto = true
-opt-level = 'z'
-codegen-units = 1
-strip = true

@@ -43,6 +43,7 @@ impl Poem {
     pub fn new(input: &str) -> Self {
         let lines = input.split("\n")
             .map(|line| line.to_string())
+            .filter(|line| !line.trim().is_empty())
             .collect::<Vec<_>>();
         Self {
             lines,
@@ -51,7 +52,9 @@ impl Poem {
 
     pub fn from_semi_obfuscated(input: &str) -> Result<Self, DeobfuscationError> {
         let mut result: Vec<String> = Vec::new();
-        let lines = input.split("\n").collect::<Vec<_>>();
+        let lines = input.split("\n")
+            .filter(|line| !line.trim().is_empty())
+            .collect::<Vec<_>>();
         if let Some((last, elements)) = lines.split_last() {
             for line in elements {
                 result.push(base64_str_decode(line)?);
@@ -65,7 +68,9 @@ impl Poem {
 
     pub fn from_fully_obfuscated(input: &str) -> Result<Self, DeobfuscationError> {
         let mut result: Vec<String> = Vec::new();
-        let lines = input.split("\n").collect::<Vec<_>>();
+        let lines = input.split("\n")
+            .filter(|line| !line.trim().is_empty())
+            .collect::<Vec<_>>();
         for line in lines {
             result.push(base64_str_decode(line)?);
         }
