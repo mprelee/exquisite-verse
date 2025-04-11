@@ -1037,14 +1037,20 @@ dependencies = [
  "eframe",
  "egui",
  "exquisite-verse-core",
+ "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]
 name = "exquisite-verse-wasm"
 version = "0.1.0"
 dependencies = [
+ "eframe",
  "exquisite-verse-core",
  "exquisite-verse-ui",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
 ]
 
 [[package]]

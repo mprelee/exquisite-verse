@@ -1,5 +1,9 @@
 use eframe::egui;
 use exquisite_verse_core::poem::Poem;
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::JsCast;
+#[cfg(target_arch = "wasm32")]
+use web_sys::HtmlCanvasElement;
 
 // Define the display mode enum
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -140,7 +144,7 @@ impl eframe::App for ExquisiteVerse {
                     // Add copy to clipboard button
                     ui.horizontal(|ui| {
                         if ui.button("📋 Copy to Clipboard").clicked() {
-                            ui.output_mut(|o| o.copied_text = poem_text.clone());
+                            ui.ctx().copy_text(poem_text.clone());
                             self.copy_feedback_timer = Some(1.0); // Show feedback for 1 second
                         }
                         
@@ -188,10 +192,33 @@ impl eframe::App for ExquisiteVerse {
 }
 
 // Add a function to run the application
+#[cfg(not(target_arch = "wasm32"))]
 pub fn run() -> Result<(), eframe::Error> {
     eframe::run_native(
         "Exquisite Verse",
         eframe::NativeOptions::default(),
         Box::new(|_cc| Ok(Box::new(ExquisiteVerse::new()))),
     )
+}
+
+#[cfg(target_arch = "wasm32")]
+pub async fn run() -> Result<(), eframe::Error> {
+    let canvas = web_sys::window()
+        .unwrap()
+        .document()
+        .unwrap()
+        .get_element_by_id("the_canvas_id")
+        .unwrap()
+        .dyn_into::<HtmlCanvasElement>()
+        .unwrap();
+
+    eframe::web::WebRunner::new()
+        .start(
+            canvas,
+            eframe::WebOptions::default(),
+            Box::new(|_cc| Ok(Box::new(ExquisiteVerse::new()))),
+        )
+        .await
+        .expect("failed to start eframe");
+    Ok(())
 } 

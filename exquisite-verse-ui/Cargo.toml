@@ -5,5 +5,9 @@ edition = "2024"
 
 [dependencies]
 egui = "0.31.1"
-eframe = "0.31.1"
+eframe = { version = "0.31.1", features = ["web_screen_reader"] }
 exquisite-verse-core = { path = "../exquisite-verse-core" }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "0.2.92"
+web-sys = { version = "0.3", features = ["Document", "Element", "HtmlCanvasElement", "Window"] }
