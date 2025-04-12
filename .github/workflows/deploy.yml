@@ -58,10 +58,9 @@ jobs:
       - name: Install cargo-binstall
         run: cargo install cargo-binstall
 
-      - name: Install Trunk using cargo-binstall
-        run: cargo binstall trunk -y
+      - name: Install latest Trunk using cargo-binstall
+        run: cargo binstall trunk --force -y        
 
-      # 🔧 Build the site with Trunk in release mode
       - name: Build with Trunk (release mode)
         run: trunk build --release
 
