@@ -11,6 +11,7 @@ permissions:
   id-token: write
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
 
@@ -33,10 +34,11 @@ jobs:
         uses: cargo-bins/cargo-binstall@main
       - run: cargo binstall trunk -y
 
-      - name: Build with Trunk
+      - name: Build with Trunk (release mode)
         env:
           RUST_BACKTRACE: 1
-        run: trunk build --release
+          TRUNK_BUILD_RELEASE: true
+        run: trunk build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
