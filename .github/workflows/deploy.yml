@@ -35,10 +35,7 @@ jobs:
       - run: cargo binstall trunk -y
 
       - name: Build with Trunk (release mode)
-        env:
-          RUST_BACKTRACE: 1
-          TRUNK_BUILD_RELEASE: true
-        run: trunk build
+        run: trunk build --release
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
