@@ -19,56 +19,67 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # ⚡ Cache compiled Rust dependencies and target directory
-      - name: Cache Rust dependencies
+      # ⚡ Cache Rust dependencies and target artifacts
+      - name: Cache Cargo Dependencies and Target
         uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: ${{ runner.os }}-cargo-
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
 
-      # ⚡ Cache Cargo-installed binaries like `trunk` and `wasm-bindgen`
+      # ⚡ Cache globally installed cargo binaries like trunk & wasm-bindgen
       - name: Cache Cargo Binaries
         uses: actions/cache@v4
         with:
           path: ~/.cargo/bin
           key: ${{ runner.os }}-cargo-bin-v1
+          restore-keys: |
+            ${{ runner.os }}-cargo-bin-
 
-      # 🦀 Install Rust + wasm target
-      - name: Install Rust Toolchain
+      # 🦀 Install Rust toolchain + WASM target
+      - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown
 
-      # 🧰 Ensure ~/.cargo/bin is in the PATH for this job
+      # 🧰 Add ~/.cargo/bin to PATH
       - name: Add Cargo bin to PATH
         run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
-      # 🧪 Install wasm-bindgen if it's not already cached
+      # 🚀 Install cargo-binstall if not already installed
+      - name: Install cargo-binstall
+        run: |
+          if ! command -v cargo-binstall >/dev/null; then
+            cargo install cargo-binstall
+          fi
+
+      # 🚀 Install trunk only if missing
+      - name: Install Trunk
+        run: |
+          if ! command -v trunk >/dev/null; then
+            cargo binstall trunk -y
+          fi
+
+      # 🧪 Install wasm-bindgen only if missing
       - name: Install wasm-bindgen
         run: |
           if ! command -v wasm-bindgen >/dev/null; then
-            cargo install wasm-bindgen-cli
+            cargo binstall wasm-bindgen-cli -y
           fi
 
-      # 🚀 Install Trunk if it's not already cached
-      - name: Install cargo-binstall
-        run: cargo install cargo-binstall
-
-      - name: Install latest Trunk using cargo-binstall
-        run: cargo binstall trunk --force -y        
-
-      - name: Build with Trunk (release mode)
+      # 🔨 Build the app using Trunk in release mode
+      - name: Build with Trunk
         run: trunk build --release
 
-      # ⚙️ Configure GitHub Pages deployment
-      - name: Setup Pages
+      # ⚙️ Prepare GitHub Pages deployment
+      - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
 
-      # 📤 Upload the `dist/` folder as the GitHub Pages artifact
+      # 📤 Upload static assets to GitHub Pages artifact
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -81,7 +92,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # 🚀 Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
