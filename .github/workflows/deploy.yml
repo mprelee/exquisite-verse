@@ -13,13 +13,21 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - name: Install Rust
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust Toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown
+
+      - name: Install wasm-bindgen
+        run: cargo install wasm-bindgen-cli
+
+      - name: Add Cargo bin to PATH
+        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
       - name: Install Trunk
         uses: cargo-bins/cargo-binstall@main
@@ -33,7 +41,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload artifact
+      - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
