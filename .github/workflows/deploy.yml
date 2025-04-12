@@ -30,7 +30,9 @@ jobs:
           sudo mv trunk /usr/local/bin/
           
       - name: Build
-        run: trunk build --release
+        run: |
+          cargo build --target wasm32-unknown-unknown --release
+          trunk build --release
         
       - name: Setup Pages
         uses: actions/configure-pages@v4
