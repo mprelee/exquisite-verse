@@ -4,7 +4,8 @@ dist = "dist"
 public_url = "/exquisite-verse/"
 
 [serve]
-addresses = ["127.0.0.1:8080"]
+address = "127.0.0.1"
+port = 8080
 open = true
 
 [[serve.mime_types]]
