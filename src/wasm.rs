@@ -1,8 +1,8 @@
-use eframe::WebOptions;
 use wasm_bindgen::prelude::*;
 use crate::ui::ExquisiteVerse;
 
 // This function is called automatically by Trunk (no JS glue needed!)
+#[cfg(target_arch = "wasm32")]
 #[wasm_bindgen(start)]
 pub async fn start() -> Result<(), JsValue> {
     // Better panic messages in the browser console
@@ -21,7 +21,7 @@ pub async fn start() -> Result<(), JsValue> {
     eframe::web::WebRunner::new()
         .start(
             canvas,
-            WebOptions::default(),
+            eframe::WebOptions::default(),
             Box::new(|_cc| Ok(Box::new(ExquisiteVerse::new()))),
         )
         .await
