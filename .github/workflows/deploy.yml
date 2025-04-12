@@ -55,11 +55,11 @@ jobs:
           fi
 
       # 🚀 Install Trunk if it's not already cached
-      - name: Install Trunk
-        run: |
-          if ! command -v trunk >/dev/null; then
-            cargo binstall trunk -y
-          fi
+      - name: Install cargo-binstall
+        run: cargo install cargo-binstall
+
+      - name: Install Trunk using cargo-binstall
+        run: cargo binstall trunk -y
 
       # 🔧 Build the site with Trunk in release mode
       - name: Build with Trunk (release mode)
