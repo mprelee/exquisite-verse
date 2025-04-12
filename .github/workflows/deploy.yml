@@ -30,6 +30,9 @@ jobs:
           sudo mv trunk /usr/local/bin/
           
       - name: Build
+        env:
+          RUST_BACKTRACE: 1
+          TRUNK_BUILD_RELEASE: true
         run: |
           cargo build --target wasm32-unknown-unknown --release
           trunk build --release
