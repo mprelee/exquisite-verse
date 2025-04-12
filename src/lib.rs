@@ -9,6 +9,11 @@ pub use wasm::*;
 
 use wasm_bindgen::prelude::*;
 
+#[cfg(not(target_arch = "wasm32"))]
+pub fn main() -> Result<(), eframe::Error> {
+    ui::run()
+}
+
 #[wasm_bindgen]
 pub fn greet() -> String {
     String::from("Hello from WASM!")

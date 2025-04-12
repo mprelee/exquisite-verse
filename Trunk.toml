@@ -9,7 +9,7 @@ address = "127.0.0.1"
 port = 8080
 open = true
 
-# Add MIME type configuration
+# Configure proper MIME types
 [[serve.mime_types]]
 extension = "js"
 mime_type = "application/javascript"

@@ -1,47 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>WASM Hello World</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exquisite Verse</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #f0f0f0;
         }
-        button {
-            padding: 10px 20px;
-            margin: 10px;
-            font-size: 16px;
-        }
-        #result {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
+        #the_canvas_id {
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
 <body>
-    <h1>WASM Hello World</h1>
-    <button onclick="sayHello()">Say Hello</button>
-    <button onclick="testAdd()">Test Add (5 + 7)</button>
-    <div id="result"></div>
-
-    <script type="module">
-        import init, { greet, add } from '/pkg/exquisite_verse.js';
-
-        window.sayHello = async function() {
-            await init();
-            const result = greet();
-            document.getElementById('result').textContent = result;
-        };
-
-        window.testAdd = async function() {
-            await init();
-            const result = add(5, 7);
-            document.getElementById('result').textContent = `5 + 7 = ${result}`;
-        };
-    </script>
+    <canvas id="the_canvas_id"></canvas>
+    <link data-trunk rel="rust" data-wasm-opt="z" />
 </body>
-</html> 
+</html>

@@ -1,44 +1,28 @@
-#[cfg(target_arch = "wasm32")]
 use eframe::WebOptions;
-#[cfg(target_arch = "wasm32")]
-use wasm_bindgen_futures::spawn_local;
-#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::prelude::*;
 use crate::ui::ExquisiteVerse;
-#[cfg(target_arch = "wasm32")]
-use wasm_bindgen::{prelude::*, JsCast};
-#[cfg(target_arch = "wasm32")]
-use web_sys::HtmlCanvasElement;
 
-/// Called from JS
-#[cfg(target_arch = "wasm32")]
-#[wasm_bindgen]
-pub fn start() {
+// This function is called automatically by Trunk (no JS glue needed!)
+#[wasm_bindgen(start)]
+pub async fn start() -> Result<(), JsValue> {
+    // Better panic messages in the browser console
     console_error_panic_hook::set_once();
-    let web_options = WebOptions::default();
-    spawn_local(async {
-        let canvas = web_sys::window()
-            .unwrap()
-            .document()
-            .unwrap()
-            .get_element_by_id("the_canvas_id")
-            .unwrap()
-            .dyn_into::<HtmlCanvasElement>()
-            .unwrap();
 
-        eframe::web::WebRunner::new()
-            .start(
-                canvas,
-                web_options,
-                Box::new(|_cc| Ok(Box::new(ExquisiteVerse::new()))),
-            )
-            .await
-            .expect("failed to start eframe");
-    });
-}
+    // Set up the canvas and start the app
+    let canvas = web_sys::window()
+        .unwrap()
+        .document()
+        .unwrap()
+        .get_element_by_id("the_canvas_id")
+        .unwrap()
+        .dyn_into::<web_sys::HtmlCanvasElement>()
+        .unwrap();
 
-// Initialize the panic hook for better error messages
-#[cfg(target_arch = "wasm32")]
-#[wasm_bindgen]
-pub fn init_panic_hook() {
-    console_error_panic_hook::set_once();
+    eframe::web::WebRunner::new()
+        .start(
+            canvas,
+            WebOptions::default(),
+            Box::new(|_cc| Ok(Box::new(ExquisiteVerse::new()))),
+        )
+        .await
 }
